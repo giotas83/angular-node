@@ -1,7 +1,7 @@
 
 export class Post {
 
-  constructor(public title: string, public content: string) {
+  constructor(public id: null|string, public title: string, public content: string) {
 
   }
 }

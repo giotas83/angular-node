@@ -1,0 +1,33 @@
+<mat-card>
+  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+    <mat-form-field hintLabel="Min 3 characters">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        type="text"
+        name="title"
+        ngModel
+        required
+        minlength="3"
+        #title="ngModel">
+      <mat-hint align="end">{{title.value?.length || 0}}</mat-hint>
+      <mat-error *ngIf="title.invalid">Please insert minimum 3 characters</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Content</mat-label>
+      <textarea
+        rows="6"
+        matInput
+        name="content"
+        ngModel
+        required
+        #content="ngModel"></textarea>
+        <mat-error *ngIf="content.invalid">Content is Required</mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit">Save post
+    </button>
+  </form>
+</mat-card>

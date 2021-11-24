@@ -1,9 +1,15 @@
 const express = require('express');
+// npm install --save nodemon   server riavvio automatico  -> nodemon server.js
+// npm install --save body-parser     ->> converte il body in una reuest in obj
+const bodyParser = require('body-parser');
 
 const app = express();
 
+app.use(bodyParser.json());  // middleware for parse body request from json data in object
+app.use(bodyParser.urlencoded({extended: false})) // middleware for parse body request from url encode data to obj
+
 app.use( (req, res, next) => {
-  console.log('first Middleware -> next');
+  console.log('first Middleware -> next'); // middleware esempio che manda soltanto avanti
   next(); // va avanti
 });
 
@@ -16,7 +22,15 @@ app.use( (req, res, next) => {
   next(); // va avanti
 });
 
-app.use('/api/posts', (req, res, next) => { // se mi collego con questo path manda questa response
+
+app.post('/api/posts', (req, res, next) => {
+  console.log('chiamata post stampo la request: ', req);
+  const post = req.body; // from bodyPArser
+  // per evitare un timeout devo cmq mandare una response
+  res.status(201).json({message: 'post created successfully'})  // 201 tutto ok una nuova risorsa è stata creata
+}) // senza il next si ferma qui e non va avanti, non mi serve andare avanti
+
+app.get('/api/posts', (req, res, next) => { // se mi collego con questo path manda questa response
   const posts = [
     {
       id: '234kb234',
@@ -35,9 +49,9 @@ app.use('/api/posts', (req, res, next) => { // se mi collego con questo path man
   }); // se mi collego con il path localhost:3000/api/posts manda la response e si ferma
 });
 
-// arriva qui se atterro senza il path non definito prima localhost:3000
+// arriva qui se atterro senza il path non definito prima localhost:3000 e senza nessuna get/post
 app.use((req, res, next)=> {
-  console.log('second Middleware -> send');
+  console.log('ultimo Middleware -> send');
   res.send('ciao sono il first server express');
 })
 

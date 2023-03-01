@@ -3,6 +3,20 @@ const express = require('express');
 // npm install --save body-parser     ->> converte il body in una reuest in obj
 const bodyParser = require('body-parser');
 
+
+// DATABASE ********
+
+const mongoose = require('mongoose');
+const Post = require('./models/post'); // schema creato per mongodb
+
+// connessione mongodb locale
+mongoose.connect('mongodb://localhost/testAngularNode').then(
+  ()=> console.log('connessione con mongodb effettuata')
+).catch( ()=> console.log('connessione con mongodb rifiutata') );
+
+
+// MIDDLEWARES *****************************
+
 const app = express();
 
 app.use(bodyParser.json());  // middleware for parse body request from json data in object
@@ -24,8 +38,10 @@ app.use( (req, res, next) => {
 
 
 app.post('/api/posts', (req, res, next) => {
-  console.log('chiamata post stampo la request: ', req);
-  const post = req.body; // from bodyPArser
+  // console.log('chiamata post stampo la request: ', req);
+  // const post = req.body; // from bodyPArser
+  const post = new Post({title: req.body.title, content: req.body.content}); // creato con schema mongoose
+  post.save(); // salvataggio in db
   // per evitare un timeout devo cmq mandare una response
   res.status(201).json({message: 'post created successfully'})  // 201 tutto ok una nuova risorsa è stata creata
 }) // senza il next si ferma qui e non va avanti, non mi serve andare avanti
